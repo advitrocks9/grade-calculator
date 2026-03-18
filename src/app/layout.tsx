@@ -14,13 +14,16 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "JMC Grade Hub — Imperial JMC Y1 Grade Calculator",
+  title: "my grades (lol)",
   description:
-    "Unofficial grade calculator for Imperial College JMC Year 1 students — 2025/26. Compute weighted module grades, ECTS-weighted year averages, and check progression requirements.",
+    "grade calculator for jmc y1 25/26",
+    icons: {
+      icon: "/icon.ico",
+    },
   openGraph: {
-    title: "JMC Grade Hub",
+    title: "my grades (lol)",
     description:
-      "Grade calculator for Imperial College JMC Year 1 — 2025/26",
+      "grade calculator for jmc y1 25/26",
     type: "website",
   },
 };
