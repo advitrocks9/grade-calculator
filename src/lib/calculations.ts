@@ -72,8 +72,9 @@ export function calculateYearAverage(
 
     if (result.currentGrade != null) {
       hasAnyGrade = true;
-      weightedSum += result.currentGrade * mod.ects;
-      enteredEcts += mod.ects;
+      const attemptedEcts = mod.ects * (result.enteredWeight / result.totalWeight);
+      weightedSum += result.currentGrade * attemptedEcts;
+      enteredEcts += attemptedEcts;
     }
 
     minSum += result.minPossible * mod.ects;

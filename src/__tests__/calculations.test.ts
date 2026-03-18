@@ -139,6 +139,20 @@ describe("calculateYearAverage", () => {
     expect(year.classification).toBe("2:1");
   });
 
+  it("scales module ECTS by attempted proportion", () => {
+    const results: ModuleResult[] = WEIGHTED_MODULES.map((m) => {
+      if (m.code === "MATH40004") {
+        return { code: m.code, currentGrade: 80, minPossible: 0.8, maxPossible: 100, enteredWeight: 1, totalWeight: 100 };
+      }
+      if (m.code === "COMP40009") {
+        return { code: m.code, currentGrade: 60, minPossible: 60, maxPossible: 60, enteredWeight: 100, totalWeight: 100 };
+      }
+      return { code: m.code, currentGrade: null, minPossible: 0, maxPossible: 100, enteredWeight: 0, totalWeight: 100 };
+    });
+    const year = calculateYearAverage(results);
+    expect(year.average).toBeCloseTo(1208 / 20.1);
+  });
+
   it("verifies total ECTS is 55", () => {
     const totalEcts = WEIGHTED_MODULES.reduce((s, m) => s + m.ects, 0);
     expect(totalEcts).toBe(55);
