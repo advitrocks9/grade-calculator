@@ -39,8 +39,11 @@ export function AssessmentSlider({
         max={100}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-24 accent-current sm:w-32"
-        style={{ color: trackColor }}
+        className="w-24 sm:w-32"
+        style={{
+          "--slider-color": trackColor,
+          background: `linear-gradient(to right, ${trackColor} ${value}%, var(--color-bg-tertiary) ${value}%)`,
+        } as React.CSSProperties}
       />
       <span className="w-8 text-right font-[family-name:var(--font-dm-mono)] text-xs text-text-primary">
         {value}

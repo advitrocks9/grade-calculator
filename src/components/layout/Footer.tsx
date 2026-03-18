@@ -1,10 +1,11 @@
 export function Footer() {
   return (
-    <footer className="border-t border-border-primary py-6">
-      <div className="mx-auto max-w-3xl px-4">
+    <footer className="py-8">
+      <div className="h-px bg-gradient-to-r from-transparent via-border-primary to-transparent" />
+      <div className="mx-auto max-w-4xl px-4 pt-6">
         <p className="text-xs text-text-muted leading-relaxed">
           This is an unofficial tool. Grade calculations may not reflect final
-          university results. Maths modules may be subject to scaling. Always
+          university results. Always
           check official Imperial College records for confirmed marks.
         </p>
       </div>

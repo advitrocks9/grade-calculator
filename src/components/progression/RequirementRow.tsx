@@ -32,7 +32,11 @@ export function RequirementRow({ requirement, onNavigate }: RequirementRowProps)
       }`}
     >
       <span
-        className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${statusColors[requirement.status]}`}
+        className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${statusColors[requirement.status]} ${
+          requirement.status !== "green"
+            ? "animate-[pulse-dot_2s_ease-in-out_infinite]"
+            : ""
+        }`}
       />
       <div className="min-w-0 flex-1">
         <p className="text-sm text-text-primary">{requirement.label}</p>

@@ -19,10 +19,12 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
   const grades = useGradeStore((s) => s.grades);
   const setGrade = useGradeStore((s) => s.setGrade);
 
-  const borderColor =
+  const accentColor =
     module.category === "maths" ? "var(--color-maths)" : "var(--color-computing)";
-  const categoryColor =
-    module.category === "maths" ? "var(--color-maths)" : "var(--color-computing)";
+  const glowColor =
+    module.category === "maths"
+      ? "rgba(129, 140, 248, 0.08)"
+      : "rgba(52, 211, 153, 0.08)";
 
   const enteredCount = module.assessments.filter(
     (a) => a.weight > 0 && grades[a.id] != null,
@@ -37,8 +39,15 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
       <motion.div
         id={`module-${module.code}`}
         layout
-        className="rounded-xl border border-border-primary bg-bg-secondary overflow-hidden"
-        style={{ borderLeftWidth: 3, borderLeftColor: borderColor }}
+        className="rounded-lg border border-border-primary bg-bg-secondary overflow-hidden transition-shadow duration-200 hover:border-border-secondary"
+        style={{
+          borderLeftWidth: 3,
+          borderLeftColor: accentColor,
+          boxShadow: "var(--shadow-card)",
+        }}
+        whileHover={{
+          boxShadow: `var(--shadow-card-hover), 0 0 20px ${glowColor}`,
+        }}
       >
         <div className="p-4">
           <div className="flex items-start justify-between gap-3">
@@ -47,7 +56,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
                 <span className="font-[family-name:var(--font-dm-mono)] text-xs text-text-muted">
                   {module.code}
                 </span>
-                <Badge label={`${module.ects} ECTS`} color={categoryColor} />
+                <Badge label={`${module.ects} ECTS`} color={accentColor} />
                 <Badge
                   label="Pass/Fail"
                   className="bg-bg-tertiary text-text-muted"
@@ -83,8 +92,15 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
       role="button"
       tabIndex={0}
       aria-expanded={expanded}
-      className="rounded-xl border border-border-primary bg-bg-secondary overflow-hidden cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-secondary"
-      style={{ borderLeftWidth: 3, borderLeftColor: borderColor }}
+      className="rounded-lg border border-border-primary bg-bg-secondary overflow-hidden cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-secondary transition-[border-color] duration-200 hover:border-border-secondary"
+      style={{
+        borderLeftWidth: 3,
+        borderLeftColor: accentColor,
+        boxShadow: "var(--shadow-card)",
+      }}
+      whileHover={{
+        boxShadow: `var(--shadow-card-hover), 0 0 20px ${glowColor}`,
+      }}
       onClick={() => setExpanded(!expanded)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -100,25 +116,42 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
               <span className="font-[family-name:var(--font-dm-mono)] text-xs text-text-muted">
                 {module.code}
               </span>
-              <Badge label={`${module.ects} ECTS`} color={categoryColor} />
+              <Badge label={`${module.ects} ECTS`} color={accentColor} />
             </div>
             <h3 className="text-sm font-medium text-text-primary">
               {module.name}
             </h3>
           </div>
-          <div className="shrink-0 text-right">
-            <GradeDisplay value={result.currentGrade} size="sm" />
-            <div className="text-xs text-text-muted mt-0.5">
-              {enteredCount}/{gradableCount}
+          <div className="shrink-0 flex items-center gap-1.5">
+            <div className="text-right">
+              <GradeDisplay value={result.currentGrade} size="sm" />
+              <div className="text-xs text-text-muted mt-0.5">
+                {enteredCount}/{gradableCount}
+              </div>
             </div>
+            <motion.svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-text-muted"
+              animate={{ rotate: expanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </motion.svg>
           </div>
         </div>
 
         {result.enteredWeight > 0 && (
-          <div className="mt-3 h-1 rounded-full bg-bg-tertiary overflow-hidden">
+          <div className="mt-3 h-1.5 rounded-full bg-bg-tertiary overflow-hidden">
             <motion.div
               className="h-full rounded-full"
-              style={{ backgroundColor: borderColor }}
+              style={{ backgroundColor: accentColor }}
               initial={{ width: 0 }}
               animate={{
                 width: `${(result.enteredWeight / result.totalWeight) * 100}%`,
@@ -139,7 +172,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
             className="overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="border-t border-border-primary px-4 pb-4 pt-3">
+            <div className="border-t border-border-primary bg-bg-primary px-4 pb-4 pt-3">
               {result.enteredWeight > 0 && (
                 <div className="mb-3 space-y-1 text-xs text-text-secondary">
                   <p>
