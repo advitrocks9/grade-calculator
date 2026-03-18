@@ -1,36 +1,30 @@
-# JMC Grade Hub
+# jmc grade calculator
 
 Grade calculator for Imperial JMC Year 1 (2025/26 cohort).
 
-Tracks your assessment marks, computes weighted module grades and the ECTS-weighted year average, and checks whether you're on track for progression. There's also a what-if simulator for seeing how your remaining assessments affect your final average.
+Covers all the maths and computing modules: Analysis, Calculus, Linear Algebra, IUM, Logic, Graphs & Algorithms, and Computing Practical. You put in your marks, it gives you your module grades, year average, classification, and tells you if you're on track to progress.
 
-## Features
+## What it does
 
-- Enter grades as plain numbers or fractions (e.g. 52/60)
-- Weighted module averages with min/max possible ranges
-- ECTS-weighted year average and classification
-- Progression requirement checker (all 10 requirements)
-- What-if simulator for unentered assessments
-- Recovery codes to restore grades on another device
+- **Module grades**: enter marks as plain numbers or fractions (e.g. `52/60`), get weighted averages per module
+- **Year average**: ECTS-weighted average across all modules with classification (First / 2:1 / 2:2 / Third)
+- **Grade ranges**: shows your min and max possible grade based on what you haven't entered yet
+- **Progression checker**: flags whether you're meeting all 10 progression requirements
+- **What-if simulator**: play around with hypothetical marks to see how they'd affect your average
+- **Target solver**: tells you what you need on remaining assessments to hit a target grade
+- **Recovery codes**: 8-character code to get your grades back on a different device
 
-## Setup
+Everything runs client-side with localStorage. There's optional Supabase sync but you don't need an account.
+
+## Running locally
 
 ```bash
 npm install
-```
-
-Copy `.env.local.example` to `.env.local` and add your Supabase credentials.
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+If you want Supabase sync, copy `.env.local.example` to `.env.local` and fill in your credentials. Otherwise it works fine without it.
 
 ## Stack
 
-Next.js, TypeScript, Tailwind CSS, Zustand, Supabase
-
-## Notes
-
-This is unofficial and not affiliated with Imperial or the JMC department. Module weights are taken from the 2025/26 handbook but may not be perfectly accurate. Don't rely on this for anything important.
+Next.js, TypeScript, Tailwind, Zustand, Supabase
