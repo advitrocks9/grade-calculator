@@ -9,11 +9,14 @@ import { SectionHeader } from "@/components/layout/SectionHeader";
 import { ModuleGrid } from "@/components/modules/ModuleGrid";
 import { ProgressionPanel } from "@/components/progression/ProgressionPanel";
 import { ScenarioSimulator } from "@/components/simulator/ScenarioSimulator";
+import { AnalyticsPanel } from "@/components/analytics/AnalyticsPanel";
 import { Footer } from "@/components/layout/Footer";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 
 function PageContent() {
   const [showSimulator, setShowSimulator] = useState(false);
   const [showProgression, setShowProgression] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   return (
     <>
@@ -39,6 +42,26 @@ function PageContent() {
               className="overflow-hidden"
             >
               <ScenarioSimulator onClose={() => setShowSimulator(false)} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <SectionHeader
+          label="Class Analytics"
+          onClick={() => setShowAnalytics(!showAnalytics)}
+          expanded={showAnalytics}
+        />
+
+        <AnimatePresence>
+          {showAnalytics && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <AnalyticsPanel />
             </motion.div>
           )}
         </AnimatePresence>
@@ -71,7 +94,9 @@ function PageContent() {
 export default function Home() {
   return (
     <ClientShell>
-      <PageContent />
+      <AnalyticsProvider>
+        <PageContent />
+      </AnalyticsProvider>
     </ClientShell>
   );
 }
