@@ -34,7 +34,7 @@ export function GradeDisplay({
   if (value == null) {
     return (
       <span
-        className={`font-[family-name:var(--font-dm-mono)] font-medium text-text-muted ${sizeClasses[size]} ${className}`}
+        className={`font-mono font-medium text-text-muted ${sizeClasses[size]} ${className}`}
       >
         --
       </span>
@@ -43,8 +43,8 @@ export function GradeDisplay({
 
   return (
     <span
-      className={`font-[family-name:var(--font-dm-mono)] font-medium ${sizeClasses[size]} ${className}`}
-      style={{ color: CLASSIFICATION_COLORS[getClassification(value)] }}
+      className={`font-mono font-medium ${sizeClasses[size]} ${className}`}
+      style={{ color: CLASSIFICATION_COLORS[getClassification(value)], textShadow: `0 0 20px ${CLASSIFICATION_COLORS[getClassification(value)]}40` }}
     >
       <motion.span>{display}</motion.span>
       {showPercent && <span className="text-[0.6em] ml-0.5">%</span>}

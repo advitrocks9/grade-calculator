@@ -123,7 +123,7 @@ export function ExportImportButtons() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="rounded-md bg-bg-tertiary px-2.5 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+        className="cursor-pointer rounded-md bg-bg-tertiary px-2.5 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
       >
         Manage
       </button>
@@ -149,7 +149,7 @@ export function ExportImportButtons() {
               aria-modal="true"
             >
               <motion.div
-                className="w-full max-w-sm overflow-hidden rounded-2xl border border-border-primary/60 bg-bg-secondary shadow-[0_16px_70px_-12px_rgba(0,0,0,0.7)]"
+                className="w-full max-w-sm overflow-hidden rounded-2xl border border-border-primary/60 bg-bg-secondary shadow-modal"
                 initial={{ opacity: 0, scale: 0.96, y: 8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: 8 }}

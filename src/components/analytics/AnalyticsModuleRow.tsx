@@ -22,23 +22,23 @@ export function AnalyticsModuleRow({
 
   return (
     <div
-      className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-bg-tertiary"
-      style={{ borderLeft: `3px solid ${accentColor}` }}
+      className="flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-bg-tertiary cursor-default"
+      style={{ borderLeft: `2px solid ${accentColor}` }}
     >
       <div className="min-w-0 flex-1">
         <p className="text-sm text-text-primary truncate">
           {module.code} {module.name}
         </p>
       </div>
-      <span className="shrink-0 text-xs text-text-muted font-[family-name:var(--font-dm-mono)]">
+      <span className="shrink-0 text-xs text-text-muted font-mono">
         Avg {moduleAnalytics.average.toFixed(1)}%
       </span>
-      <span className="shrink-0 text-xs font-[family-name:var(--font-dm-mono)] text-text-primary">
+      <span className="shrink-0 text-xs font-mono text-text-primary">
         {userGrade != null ? `${userGrade.toFixed(1)}%` : "-"}
       </span>
       {delta != null && (
         <span
-          className="shrink-0 text-xs font-[family-name:var(--font-dm-mono)]"
+          className="shrink-0 text-xs font-mono"
           style={{
             color: delta >= 0 ? "var(--color-first)" : "var(--color-fail)",
           }}

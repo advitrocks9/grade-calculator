@@ -39,9 +39,9 @@ export function RequirementRow({
     >
       <div className="flex items-center gap-1.5 shrink-0 mt-1">
         <span
-          className={`h-2.5 w-2.5 rounded-full ${statusColors[requirement.status]} ${
+          className={`h-2 w-2 rounded-full ${statusColors[requirement.status]} ${
             requirement.status !== "green"
-              ? "animate-[pulse-dot_2s_ease-in-out_infinite]"
+              ? "animate-[pulse-dot_2s_ease-in-out_infinite] will-change-auto"
               : ""
           }`}
         />

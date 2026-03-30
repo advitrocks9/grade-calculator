@@ -61,8 +61,8 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
       : "var(--color-computing)";
   const glowColor =
     module.category === "maths"
-      ? "rgba(129, 140, 248, 0.08)"
-      : "rgba(52, 211, 153, 0.08)";
+      ? "rgba(129, 140, 248, 0.06)"
+      : "rgba(52, 211, 153, 0.06)";
 
   const enteredCount = module.assessments.filter(
     (a) => a.weight > 0 && grades[a.id] != null,
@@ -91,7 +91,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-[family-name:var(--font-dm-mono)] text-xs text-text-muted">
+                <span className="font-mono text-xs text-text-muted">
                   {module.code}
                 </span>
                 <Badge label={`${module.ects} ECTS`} color={accentColor} />
@@ -152,7 +152,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-[family-name:var(--font-dm-mono)] text-xs text-text-muted">
+              <span className="font-mono text-xs text-text-muted">
                 {module.code}
               </span>
               <Badge label={`${module.ects} ECTS`} color={accentColor} />
@@ -187,7 +187,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
         </div>
 
         {result.enteredWeight > 0 && (
-          <div className="mt-3 h-1.5 rounded-full bg-bg-tertiary overflow-hidden">
+          <div className="mt-3 h-1 rounded-full bg-bg-tertiary overflow-hidden">
             <motion.div
               className="h-full rounded-full"
               style={{ backgroundColor: accentColor }}
@@ -211,26 +211,26 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
             className="overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="border-t border-border-primary bg-bg-primary px-4 pb-4 pt-3">
+            <div className="border-t border-border-primary bg-bg-primary/80 px-4 pb-4 pt-3">
               {result.enteredWeight > 0 && (
                 <div className="mb-3 space-y-1 text-xs text-text-secondary">
                   <p>
                     Current grade based on{" "}
-                    <span className="font-[family-name:var(--font-dm-mono)]">
+                    <span className="font-mono">
                       {result.enteredWeight}%
                     </span>{" "}
                     of assessments:{" "}
-                    <span className="font-[family-name:var(--font-dm-mono)] text-text-primary">
+                    <span className="font-mono text-text-primary">
                       {result.currentGrade?.toFixed(1)}%
                     </span>
                   </p>
                   <p>
                     Range:{" "}
-                    <span className="font-[family-name:var(--font-dm-mono)]">
+                    <span className="font-mono">
                       {result.minPossible.toFixed(1)}%
                     </span>
                     {" - "}
-                    <span className="font-[family-name:var(--font-dm-mono)]">
+                    <span className="font-mono">
                       {result.maxPossible.toFixed(1)}%
                     </span>
                   </p>
@@ -259,7 +259,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
                     e.stopPropagation();
                     setShowNotes(!showNotes);
                   }}
-                  className="text-[10px] text-text-muted hover:text-text-secondary transition-colors"
+                  className="text-[10px] text-text-muted hover:text-text-secondary transition-colors tracking-wide uppercase"
                 >
                   {showNotes
                     ? "Hide notes"
@@ -274,7 +274,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
                     placeholder="Personal notes (stored locally)"
-                    className="mt-1.5 w-full resize-none rounded-md border border-border-primary bg-bg-tertiary px-2.5 py-1.5 text-xs text-text-primary outline-none placeholder:text-text-muted focus:border-border-secondary"
+                    className="mt-1.5 w-full resize-none rounded-md border border-border-subtle bg-bg-tertiary px-2.5 py-1.5 text-xs text-text-primary outline-none placeholder:text-text-muted focus:border-border-secondary transition-colors duration-200"
                     rows={3}
                   />
                 )}

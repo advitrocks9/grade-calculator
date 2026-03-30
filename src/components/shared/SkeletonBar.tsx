@@ -6,7 +6,7 @@ type SkeletonBarProps = {
 
 export function SkeletonBar({ className = "h-3 w-full" }: SkeletonBarProps) {
   return (
-    <div className={`animate-pulse rounded-md bg-bg-tertiary ${className}`} />
+    <div className={`rounded-md bg-gradient-to-r from-bg-tertiary via-bg-hover to-bg-tertiary bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite] ${className}`} />
   );
 }
 

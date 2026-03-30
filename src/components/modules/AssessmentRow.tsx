@@ -26,13 +26,13 @@ export function AssessmentRow({
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-3 py-2">
+      <div className="flex items-center justify-between gap-3 py-2 rounded-md px-1 -mx-1 hover:bg-bg-hover/50 transition-colors duration-150">
         <div className="flex-1 min-w-0">
           <span className="text-sm text-text-primary truncate block">
             {assessment.name}
           </span>
         </div>
-        <span className="shrink-0 text-xs font-[family-name:var(--font-dm-mono)] text-text-muted w-10 text-right">
+        <span className="shrink-0 text-xs font-mono text-text-muted w-10 text-right">
           {assessment.weight}%
         </span>
         {isZeroWeight ? (
@@ -48,7 +48,7 @@ export function AssessmentRow({
               e.stopPropagation();
               setDistOpen(!distOpen);
             }}
-            className="shrink-0 p-1 rounded text-text-muted hover:text-text-secondary transition-colors"
+            className="shrink-0 p-1 rounded text-text-muted hover:text-text-secondary transition-colors cursor-pointer"
             title="Grade distribution"
           >
             <svg

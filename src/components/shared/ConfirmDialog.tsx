@@ -53,7 +53,7 @@ export function ConfirmDialog({
           aria-modal="true"
         >
           <motion.div
-            className="w-full max-w-sm overflow-hidden rounded-2xl border border-border-primary/60 bg-bg-secondary shadow-[0_16px_70px_-12px_rgba(0,0,0,0.7)]"
+            className="w-full max-w-sm overflow-hidden rounded-2xl border border-border-primary/60 bg-bg-secondary shadow-modal"
             initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}

@@ -96,7 +96,7 @@ export function ScenarioSimulator({ onClose }: ScenarioSimulatorProps) {
         </h2>
         <button
           onClick={onClose}
-          className="text-xs text-text-muted hover:text-text-primary transition-colors"
+          className="text-xs text-text-muted hover:text-text-primary transition-colors cursor-pointer"
         >
           Close
         </button>
@@ -122,19 +122,19 @@ export function ScenarioSimulator({ onClose }: ScenarioSimulatorProps) {
           <div className="flex flex-wrap gap-1.5">
             <button
               onClick={() => applyPreset(60)}
-              className="rounded-md bg-bg-tertiary px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+              className="rounded-md bg-bg-tertiary px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
             >
               All 60%
             </button>
             <button
               onClick={() => applyPreset(70)}
-              className="rounded-md bg-bg-tertiary px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+              className="rounded-md bg-bg-tertiary px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
             >
               All 70%
             </button>
             <button
               onClick={() => applyPreset(0)}
-              className="rounded-md bg-bg-tertiary px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+              className="rounded-md bg-bg-tertiary px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
             >
               Reset to 0
             </button>
@@ -142,7 +142,7 @@ export function ScenarioSimulator({ onClose }: ScenarioSimulatorProps) {
         </div>
       </div>
 
-      <div className="max-h-80 overflow-y-auto px-4 py-2">
+      <div className="max-h-72 overflow-y-auto px-4 py-2">
         {unenteredAssessments.map(({ assessment, category }) => (
           <AssessmentSlider
             key={assessment.id}
@@ -157,7 +157,7 @@ export function ScenarioSimulator({ onClose }: ScenarioSimulatorProps) {
       <div className="border-t border-border-primary px-4 py-3">
         <button
           onClick={() => setShowConfirm(true)}
-          className="w-full rounded-md bg-text-primary py-2 text-xs font-medium text-bg-primary transition-colors hover:bg-text-secondary"
+          className="w-full rounded-md bg-text-primary py-2.5 text-xs font-semibold text-bg-primary tracking-wide transition-colors hover:bg-text-secondary"
         >
           Save as my grades
         </button>

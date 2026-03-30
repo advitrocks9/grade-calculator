@@ -34,7 +34,7 @@ function UserMenu({
     return (
       <button
         onClick={onSignIn}
-        className="rounded-md bg-bg-tertiary px-2.5 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+        className="rounded-md bg-bg-tertiary px-2.5 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
       >
         Sign in
       </button>
@@ -52,12 +52,12 @@ function UserMenu({
     <div ref={menuRef} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex h-8 w-8 items-center justify-center rounded-full bg-bg-tertiary text-xs font-medium text-text-primary transition-colors hover:bg-border-primary"
+        className="flex h-8 w-8 items-center justify-center rounded-full bg-bg-tertiary text-xs font-medium text-text-primary transition-colors hover:bg-border-primary cursor-pointer"
       >
         {initials}
       </button>
       {open && (
-        <div className="absolute right-0 top-10 z-50 w-56 rounded-lg border border-border-primary bg-bg-secondary p-2 shadow-lg">
+        <div className="absolute right-0 top-10 z-50 w-56 rounded-xl border border-border-primary bg-bg-secondary p-2 shadow-elevated overflow-hidden">
           <div className="border-b border-border-primary px-3 py-2">
             <p className="text-sm font-medium text-text-primary">
               {session.user.name}
@@ -69,13 +69,13 @@ function UserMenu({
               setOpen(false);
               onProfile();
             }}
-            className="mt-1 w-full rounded-md px-3 py-1.5 text-left text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors"
+            className="mt-1 w-full rounded-lg px-3 py-1.5 text-left text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors cursor-pointer"
           >
             Profile
           </button>
           <button
             onClick={() => signOut()}
-            className="mt-0.5 w-full rounded-md px-3 py-1.5 text-left text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors"
+            className="mt-0.5 w-full rounded-lg px-3 py-1.5 text-left text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors cursor-pointer"
           >
             Sign out
           </button>

@@ -103,7 +103,7 @@ export function LoginModal({ open, onClose, initialError }: LoginModalProps) {
           aria-modal="true"
         >
           <motion.div
-            className="w-full max-w-sm overflow-hidden rounded-2xl border border-border-primary/60 bg-bg-secondary shadow-[0_16px_70px_-12px_rgba(0,0,0,0.7)]"
+            className="w-full max-w-sm overflow-hidden rounded-2xl border border-border-primary/60 bg-bg-secondary shadow-modal"
             initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
@@ -172,7 +172,7 @@ export function LoginModal({ open, onClose, initialError }: LoginModalProps) {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-border-primary/50 bg-bg-tertiary py-2.5 text-sm font-medium text-text-primary transition-all hover:bg-bg-hover hover:border-border-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="cursor-pointer flex w-full items-center justify-center gap-2 rounded-xl border border-border-primary/50 bg-bg-tertiary py-2.5 text-sm font-medium text-text-primary transition-all hover:bg-bg-hover hover:border-border-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading && <Spinner />}
                       {loading ? "Sending..." : "Send magic link"}
@@ -218,7 +218,7 @@ export function LoginModal({ open, onClose, initialError }: LoginModalProps) {
                       setSent(false);
                       setError(null);
                     }}
-                    className="mt-5 text-xs text-text-muted hover:text-text-secondary transition-colors"
+                    className="cursor-pointer mt-5 text-xs text-text-muted hover:text-text-secondary transition-colors"
                   >
                     Didn&apos;t get it? Try again
                   </button>

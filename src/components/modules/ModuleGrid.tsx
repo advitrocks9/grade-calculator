@@ -10,7 +10,7 @@ export function ModuleGrid() {
   const resultsMap = new Map(results.map((r) => [r.code, r]));
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
       {MODULES.map((module, i) => {
         const result = resultsMap.get(module.code)!;
         return (
@@ -19,7 +19,7 @@ export function ModuleGrid() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
-              delay: i * 0.05,
+              delay: i * 0.04,
               duration: 0.3,
               ease: "easeOut",
             }}

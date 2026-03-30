@@ -30,9 +30,9 @@ export function AssessmentDistributionPanel({
   const limitedData = distribution.totalCount < 10;
 
   return (
-    <div className="rounded-md border border-border-primary bg-bg-primary overflow-hidden">
+    <div className="rounded-md border border-border-subtle bg-bg-primary overflow-hidden">
       <button
-        className="w-full flex items-center justify-between px-3 py-2 text-xs text-text-muted hover:text-text-secondary transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2 text-xs text-text-muted hover:text-text-secondary transition-colors cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
         <span className="font-medium uppercase tracking-wider">
@@ -76,7 +76,7 @@ export function AssessmentDistributionPanel({
                 totalCount={distribution.totalCount}
               />
 
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-[family-name:var(--font-dm-mono)] text-text-secondary">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-mono text-text-secondary">
                 <span>Mean: {distribution.mean.toFixed(1)}%</span>
                 <span>Median: {distribution.median.toFixed(1)}%</span>
                 {userGrade != null && delta != null && (

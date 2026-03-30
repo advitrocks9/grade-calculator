@@ -15,7 +15,8 @@ export function ProgressionPanel() {
 
   return (
     <div className="rounded-xl border border-border-primary bg-bg-secondary p-4">
-      <h2 className="text-sm font-semibold text-text-primary mb-3">
+      <div className="h-px bg-gradient-to-r from-transparent via-first/15 to-transparent mb-1" />
+      <h2 className="text-sm font-semibold text-text-primary mb-4">
         Progression Requirements
       </h2>
       <div className="space-y-0.5">

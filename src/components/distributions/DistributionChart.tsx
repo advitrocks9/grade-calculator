@@ -54,17 +54,20 @@ export function DistributionChart({
 
         return (
           <div key={label} className="flex items-center gap-2">
-            <span className="text-xs font-[family-name:var(--font-dm-mono)] text-text-muted w-12 text-right shrink-0">
+            <span className="text-xs font-mono text-text-muted w-12 text-right shrink-0">
               {label}
             </span>
-            <div className="flex-1 h-5 rounded bg-bg-tertiary overflow-hidden relative">
+            <div className="flex-1 h-6 rounded bg-bg-tertiary overflow-hidden relative">
               <motion.div
-                className="h-full rounded"
+                className="h-full rounded-r-sm rounded-l-none"
                 style={{
                   backgroundColor: color,
                   opacity: isUserBucket ? 1 : 0.6,
                   border: isUserBucket
-                    ? "1.5px solid var(--color-text-primary)"
+                    ? "2px solid var(--color-text-primary)"
+                    : "none",
+                  boxShadow: isUserBucket
+                    ? "0 0 8px rgba(245, 245, 247, 0.15)"
                     : "none",
                 }}
                 initial={{ width: 0 }}
@@ -83,7 +86,7 @@ export function DistributionChart({
                 </div>
               )}
             </div>
-            <span className="text-xs font-[family-name:var(--font-dm-mono)] text-text-muted w-6 text-right shrink-0">
+            <span className="text-xs font-mono text-text-muted w-6 text-right shrink-0">
               {count}
             </span>
           </div>

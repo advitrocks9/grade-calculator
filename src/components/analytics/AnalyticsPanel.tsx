@@ -33,7 +33,7 @@ function ComparisonBar({
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs text-text-muted font-[family-name:var(--font-dm-mono)] w-12 shrink-0">
+      <span className="text-xs text-text-muted font-mono w-12 shrink-0">
         {label}
       </span>
       <div className="flex-1 h-2 rounded-full bg-bg-tertiary overflow-hidden">
@@ -45,7 +45,7 @@ function ComparisonBar({
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
       </div>
-      <span className="text-xs font-[family-name:var(--font-dm-mono)] text-text-primary w-14 text-right shrink-0">
+      <span className="text-xs font-mono text-text-primary w-14 text-right shrink-0">
         {value.toFixed(1)}%
       </span>
     </div>
@@ -69,7 +69,7 @@ export function AnalyticsPanel() {
         </p>
         <Link
           href="/login"
-          className="inline-block rounded-md bg-bg-tertiary px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors"
+          className="inline-block rounded-md bg-bg-tertiary px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
         >
           Sign in
         </Link>
@@ -103,9 +103,10 @@ export function AnalyticsPanel() {
 
   return (
     <div
-      className="rounded-xl border border-border-primary bg-bg-secondary p-4 space-y-4"
+      className="rounded-xl border border-border-primary bg-bg-secondary overflow-hidden p-4 space-y-4"
       style={{ boxShadow: "var(--shadow-card)" }}
     >
+      <div className="h-px bg-gradient-to-r from-transparent via-maths/20 to-transparent" />
       <div className="space-y-2">
         <h3 className="text-sm font-semibold text-text-primary">
           Year Average
@@ -121,7 +122,7 @@ export function AnalyticsPanel() {
           color="var(--color-first)"
         />
         {delta != null && (
-          <p className="text-xs font-[family-name:var(--font-dm-mono)] text-right">
+          <p className="text-xs font-mono text-right">
             <span
               style={{
                 color: delta >= 0 ? "var(--color-first)" : "var(--color-fail)",
@@ -162,14 +163,14 @@ export function AnalyticsPanel() {
               module and click the chart icon next to an assessment to see the
               distribution.
             </p>
-            <p className="text-xs font-[family-name:var(--font-dm-mono)] text-text-muted">
+            <p className="text-xs font-mono text-text-muted">
               {Object.keys(distributionsData.distributions).length} assessments
               with distribution data
             </p>
           </div>
         )}
 
-      <p className="text-xs text-text-muted font-[family-name:var(--font-dm-mono)]">
+      <p className="text-xs text-text-muted font-mono">
         {analytics.yearAverage.studentCount} students ·{" "}
         {timeAgo(analytics.generatedAt)}
       </p>
