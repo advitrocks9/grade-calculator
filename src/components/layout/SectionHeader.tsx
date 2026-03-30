@@ -8,14 +8,19 @@ type SectionHeaderProps = {
   expanded?: boolean;
 };
 
-export function SectionHeader({ label, onClick, expanded }: SectionHeaderProps) {
+export function SectionHeader({
+  label,
+  onClick,
+  expanded,
+}: SectionHeaderProps) {
   return (
     <div
-      className={`flex items-center gap-3 ${onClick ? "cursor-pointer" : ""}`}
+      className={`flex items-center gap-3 ${onClick ? "cursor-pointer transition-colors duration-200" : ""}`}
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-expanded={onClick ? expanded : undefined}
+      aria-label={onClick ? `${label}, expand or collapse` : undefined}
       onKeyDown={
         onClick
           ? (e) => {
@@ -27,10 +32,10 @@ export function SectionHeader({ label, onClick, expanded }: SectionHeaderProps) 
           : undefined
       }
     >
-      <span className="text-xs font-medium uppercase tracking-wider text-text-muted whitespace-nowrap">
+      <span className={`text-xs font-medium uppercase tracking-wider text-text-muted whitespace-nowrap ${onClick ? "hover:text-text-secondary" : ""}`}>
         {label}
       </span>
-      <div className="h-px flex-1 bg-border-primary" />
+      <div className="h-px flex-1 bg-gradient-to-r from-border-primary via-border-primary to-transparent" />
       {onClick != null && (
         <motion.svg
           width="14"

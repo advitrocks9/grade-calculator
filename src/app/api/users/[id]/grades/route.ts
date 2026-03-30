@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
-import { authenticateRequest } from "@/lib/auth";
+import { auth } from "@/auth";
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const userId = decodeURIComponent(id);
+  const session = await auth();
 
-  const authorized = await authenticateRequest(request, id);
-  if (!authorized) {
+  if (!session?.user?.email || session.user.email !== userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -18,11 +19,14 @@ export async function GET(
   const { data, error } = await supabase
     .from("grades")
     .select("assessment_id, mark")
-    .eq("user_id", id);
+    .eq("user_id", userId);
 
   if (error) {
     console.error("Grades fetch failed:", error.message);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ grades: data });
@@ -33,9 +37,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  const userId = decodeURIComponent(id);
+  const session = await auth();
 
-  const authorized = await authenticateRequest(request, id);
-  if (!authorized) {
+  if (!session?.user?.email || session.user.email !== userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -50,9 +55,9 @@ export async function PUT(
     grades: { assessment_id: string; mark: number }[];
   };
 
-  if (!Array.isArray(grades) || grades.length === 0 || grades.length > 50) {
+  if (!Array.isArray(grades) || grades.length > 50) {
     return NextResponse.json(
-      { error: "grades must be a non-empty array (max 50)" },
+      { error: "grades must be an array (max 50)" },
       { status: 400 },
     );
   }
@@ -62,6 +67,7 @@ export async function PUT(
       typeof g.assessment_id !== "string" ||
       !g.assessment_id ||
       typeof g.mark !== "number" ||
+      isNaN(g.mark) ||
       g.mark < 0 ||
       g.mark > 100
     ) {
@@ -74,19 +80,48 @@ export async function PUT(
 
   const supabase = createServerClient();
 
-  const rows = grades.map((g) => ({
-    user_id: id,
-    assessment_id: g.assessment_id,
-    mark: g.mark,
-  }));
+  if (grades.length > 0) {
+    const rows = grades.map((g) => ({
+      user_id: userId,
+      assessment_id: g.assessment_id,
+      mark: g.mark,
+    }));
 
-  const { error } = await supabase.from("grades").upsert(rows, {
-    onConflict: "user_id, assessment_id",
-  });
+    const { error } = await supabase.from("grades").upsert(rows, {
+      onConflict: "user_id, assessment_id",
+    });
 
-  if (error) {
-    console.error("Grades upsert failed:", error.message);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    if (error) {
+      console.error("Grades upsert failed:", error.message);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 },
+      );
+    }
+
+    const sentIds = grades.map((g) => g.assessment_id);
+    const { error: deleteError } = await supabase
+      .from("grades")
+      .delete()
+      .eq("user_id", userId)
+      .not("assessment_id", "in", `(${sentIds.join(",")})`);
+
+    if (deleteError) {
+      console.error("Grades cleanup failed:", deleteError.message);
+    }
+  } else {
+    const { error } = await supabase
+      .from("grades")
+      .delete()
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Grades delete failed:", error.message);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 },
+      );
+    }
   }
 
   return NextResponse.json({ success: true });

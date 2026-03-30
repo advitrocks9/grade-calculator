@@ -10,8 +10,7 @@ import {
 import { MODULES, WEIGHTED_MODULES } from "@/config/modules";
 import type { GradeMap, ModuleResult } from "@/lib/types";
 
-const findModule = (code: string) =>
-  MODULES.find((m) => m.code === code)!;
+const findModule = (code: string) => MODULES.find((m) => m.code === code)!;
 
 describe("getClassification", () => {
   it("returns correct classification at boundaries", () => {
@@ -142,12 +141,33 @@ describe("calculateYearAverage", () => {
   it("scales module ECTS by attempted proportion", () => {
     const results: ModuleResult[] = WEIGHTED_MODULES.map((m) => {
       if (m.code === "MATH40004") {
-        return { code: m.code, currentGrade: 80, minPossible: 0.8, maxPossible: 100, enteredWeight: 1, totalWeight: 100 };
+        return {
+          code: m.code,
+          currentGrade: 80,
+          minPossible: 0.8,
+          maxPossible: 100,
+          enteredWeight: 1,
+          totalWeight: 100,
+        };
       }
       if (m.code === "COMP40009") {
-        return { code: m.code, currentGrade: 60, minPossible: 60, maxPossible: 60, enteredWeight: 100, totalWeight: 100 };
+        return {
+          code: m.code,
+          currentGrade: 60,
+          minPossible: 60,
+          maxPossible: 60,
+          enteredWeight: 100,
+          totalWeight: 100,
+        };
       }
-      return { code: m.code, currentGrade: null, minPossible: 0, maxPossible: 100, enteredWeight: 0, totalWeight: 100 };
+      return {
+        code: m.code,
+        currentGrade: null,
+        minPossible: 0,
+        maxPossible: 100,
+        enteredWeight: 0,
+        totalWeight: 100,
+      };
     });
     const year = calculateYearAverage(results);
     expect(year.average).toBeCloseTo(1208 / 20.1);

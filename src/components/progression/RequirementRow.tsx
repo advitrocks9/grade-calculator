@@ -13,9 +13,17 @@ const statusColors = {
   red: "bg-red",
 };
 
-export function RequirementRow({ requirement, onNavigate }: RequirementRowProps) {
-  const isClickable =
-    requirement.moduleCode && requirement.status !== "green";
+const statusLabels = {
+  green: "Passed",
+  amber: "At risk",
+  red: "Not met",
+};
+
+export function RequirementRow({
+  requirement,
+  onNavigate,
+}: RequirementRowProps) {
+  const isClickable = requirement.moduleCode && requirement.status !== "green";
 
   return (
     <button
@@ -26,18 +34,21 @@ export function RequirementRow({ requirement, onNavigate }: RequirementRowProps)
       }}
       disabled={!isClickable}
       className={`flex w-full items-start gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${
-        isClickable
-          ? "hover:bg-bg-tertiary cursor-pointer"
-          : "cursor-default"
+        isClickable ? "hover:bg-bg-tertiary cursor-pointer" : "cursor-default"
       }`}
     >
-      <span
-        className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${statusColors[requirement.status]} ${
-          requirement.status !== "green"
-            ? "animate-[pulse-dot_2s_ease-in-out_infinite]"
-            : ""
-        }`}
-      />
+      <div className="flex items-center gap-1.5 shrink-0 mt-1">
+        <span
+          className={`h-2 w-2 rounded-full ${statusColors[requirement.status]} ${
+            requirement.status !== "green"
+              ? "animate-[pulse-dot_2s_ease-in-out_infinite] will-change-auto"
+              : ""
+          }`}
+        />
+        <span className="text-[10px] text-text-muted">
+          {statusLabels[requirement.status]}
+        </span>
+      </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm text-text-primary">{requirement.label}</p>
         <p className="text-xs text-text-muted mt-0.5">{requirement.detail}</p>

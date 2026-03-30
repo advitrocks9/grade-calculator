@@ -12,6 +12,7 @@ import { ScenarioSimulator } from "@/components/simulator/ScenarioSimulator";
 import { AnalyticsPanel } from "@/components/analytics/AnalyticsPanel";
 import { Footer } from "@/components/layout/Footer";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { DistributionsProvider } from "@/components/distributions/DistributionsProvider";
 
 function PageContent() {
   const [showSimulator, setShowSimulator] = useState(false);
@@ -22,7 +23,7 @@ function PageContent() {
     <>
       <HeaderClient />
       <SummaryBar />
-      <main className="mx-auto max-w-4xl px-4 py-6 space-y-6">
+      <main className="mx-auto max-w-4xl px-4 py-8 space-y-7">
         <SectionHeader label="Modules" />
         <ModuleGrid />
 
@@ -95,7 +96,9 @@ export default function Home() {
   return (
     <ClientShell>
       <AnalyticsProvider>
-        <PageContent />
+        <DistributionsProvider>
+          <PageContent />
+        </DistributionsProvider>
       </AnalyticsProvider>
     </ClientShell>
   );

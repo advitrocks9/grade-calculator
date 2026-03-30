@@ -9,16 +9,27 @@ type GradeInputProps = {
   disabled?: boolean;
 };
 
-export function GradeInput({ assessmentId, disabled = false }: GradeInputProps) {
+export function GradeInput({
+  assessmentId,
+  disabled = false,
+}: GradeInputProps) {
   const mark = useGradeStore((s) => s.grades[assessmentId]);
   const setGrade = useGradeStore((s) => s.setGrade);
   const [localValue, setLocalValue] = useState<string>("");
   const [isFocused, setIsFocused] = useState(false);
   const [expressionHint, setExpressionHint] = useState<string | null>(null);
 
-  const displayValue = isFocused ? localValue : (mark != null ? String(mark) : "");
+  const displayValue = isFocused
+    ? localValue
+    : mark != null
+      ? String(mark)
+      : "";
   const parsedLocal = localValue ? parseFloat(localValue) : null;
-  const isOutOfRange = isFocused && parsedLocal != null && !isNaN(parsedLocal) && (parsedLocal < 0 || parsedLocal > 100);
+  const isOutOfRange =
+    isFocused &&
+    parsedLocal != null &&
+    !isNaN(parsedLocal) &&
+    (parsedLocal < 0 || parsedLocal > 100);
 
   const handleFocus = () => {
     setLocalValue(expressionHint ?? (mark != null ? String(mark) : ""));
@@ -75,15 +86,15 @@ export function GradeInput({ assessmentId, disabled = false }: GradeInputProps) 
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         disabled={disabled}
-        placeholder="—"
-        className={`w-20 rounded-md border bg-bg-tertiary px-2 py-1 text-right font-[family-name:var(--font-dm-mono)] text-sm text-text-primary outline-none transition-colors
+        placeholder="-"
+        className={`w-20 rounded-md border bg-bg-tertiary px-2 py-1 text-right font-mono text-sm text-text-primary outline-none transition-colors
           placeholder:text-text-muted
-          focus:border-border-secondary focus:ring-1 focus:ring-border-secondary
+          focus:ring-1 focus:ring-maths/20 focus:border-maths/30
           disabled:cursor-not-allowed disabled:opacity-40
-          ${isOutOfRange ? "border-red" : "border-border-primary"}`}
+          ${isOutOfRange ? "border-red" : "border-border-subtle"}`}
       />
       {!isFocused && expressionHint && mark != null && (
-        <p className="absolute -bottom-4 right-0 text-[10px] text-text-muted font-[family-name:var(--font-dm-mono)] whitespace-nowrap">
+        <p className="absolute -bottom-4 right-0 text-[9px] text-text-muted font-mono whitespace-nowrap opacity-70">
           {expressionHint}
         </p>
       )}

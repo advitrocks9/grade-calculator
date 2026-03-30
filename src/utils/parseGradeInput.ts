@@ -2,7 +2,9 @@ export function parseGradeInput(input: string): number | null {
   const trimmed = input.trim();
   if (trimmed === "") return null;
 
-  const fractionMatch = trimmed.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/);
+  const fractionMatch = trimmed.match(
+    /^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/,
+  );
   if (fractionMatch) {
     const num = parseFloat(fractionMatch[1]);
     const den = parseFloat(fractionMatch[2]);

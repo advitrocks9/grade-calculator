@@ -23,7 +23,7 @@ export function ProgressBar({
     >
       <motion.div
         className="h-full rounded-full"
-        style={{ backgroundColor: color }}
+        style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}30` }}
         initial={{ width: 0 }}
         animate={{ width: `${pct}%` }}
         transition={{ duration: 0.3, ease: "easeOut" }}

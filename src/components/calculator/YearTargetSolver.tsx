@@ -18,7 +18,8 @@ export function YearTargetSolver() {
   const grades = useGradeStore((s) => s.grades);
   const yearResult = useYearResult();
 
-  const target = selectedTarget ?? (customTarget ? parseFloat(customTarget) : null);
+  const target =
+    selectedTarget ?? (customTarget ? parseFloat(customTarget) : null);
 
   const requiredMark =
     target != null ? solveForYearTarget(target, grades) : undefined;
@@ -32,11 +33,12 @@ export function YearTargetSolver() {
         {PRESETS.map((p) => (
           <button
             key={p.label}
+            aria-label={`Target ${p.label} (${p.target}%)`}
             onClick={() => {
               setSelectedTarget(selectedTarget === p.target ? null : p.target);
               setCustomTarget("");
             }}
-            className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+            className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
               selectedTarget === p.target
                 ? "bg-text-primary text-bg-primary"
                 : "bg-bg-tertiary text-text-secondary hover:text-text-primary"
@@ -53,7 +55,7 @@ export function YearTargetSolver() {
             setCustomTarget(e.target.value);
             setSelectedTarget(null);
           }}
-          className="w-16 rounded-md border border-border-primary bg-bg-tertiary px-2 py-1 text-xs font-[family-name:var(--font-dm-mono)] text-text-primary outline-none placeholder:text-text-muted
+          className="w-16 rounded-md border border-border-subtle bg-bg-tertiary px-2 py-1 text-xs font-mono text-text-primary outline-none placeholder:text-text-muted
             [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         />
       </div>
@@ -61,17 +63,18 @@ export function YearTargetSolver() {
       {target != null && requiredMark !== undefined && (
         <div className="text-xs">
           {requiredMark === null ? (
-            <p className="text-red line-through">
-              Not achievable — maximum possible is {yearResult.maxPossible.toFixed(1)}%
+            <p className="text-red">
+              Not achievable. Would need over 100% on remaining assessments (max
+              possible: {yearResult.maxPossible.toFixed(1)}%)
             </p>
           ) : requiredMark === 0 ? (
             <p className="text-first">
-              Already secured — even with 0% you&apos;ll get ≥{target}%
+              Already secured - even 0% gives you ≥{target}%
             </p>
           ) : (
             <p className="text-text-secondary">
               You need{" "}
-              <span className="font-[family-name:var(--font-dm-mono)] text-text-primary font-medium">
+              <span className="font-mono text-text-primary font-medium">
                 ≥{requiredMark.toFixed(1)}%
               </span>{" "}
               average on all remaining assessments
