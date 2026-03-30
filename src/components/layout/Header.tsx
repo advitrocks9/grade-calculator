@@ -1,11 +1,11 @@
 "use client";
 
-type HeaderProps = {
-  syncSlot?: React.ReactNode;
-  recoverySlot?: React.ReactNode;
-};
+interface HeaderProps {
+  authSlot?: React.ReactNode;
+  exportImportSlot?: React.ReactNode;
+}
 
-export function Header({ syncSlot, recoverySlot }: HeaderProps) {
+export function Header({ authSlot, exportImportSlot }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-bg-primary/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
@@ -18,8 +18,8 @@ export function Header({ syncSlot, recoverySlot }: HeaderProps) {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          {syncSlot}
-          {recoverySlot}
+          {exportImportSlot}
+          {authSlot}
         </div>
       </div>
       <div className="h-px bg-gradient-to-r from-transparent via-border-primary to-transparent" />

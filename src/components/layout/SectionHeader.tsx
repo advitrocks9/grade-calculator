@@ -8,7 +8,11 @@ type SectionHeaderProps = {
   expanded?: boolean;
 };
 
-export function SectionHeader({ label, onClick, expanded }: SectionHeaderProps) {
+export function SectionHeader({
+  label,
+  onClick,
+  expanded,
+}: SectionHeaderProps) {
   return (
     <div
       className={`flex items-center gap-3 ${onClick ? "cursor-pointer" : ""}`}
@@ -16,6 +20,7 @@ export function SectionHeader({ label, onClick, expanded }: SectionHeaderProps) 
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-expanded={onClick ? expanded : undefined}
+      aria-label={onClick ? `${label}, expand or collapse` : undefined}
       onKeyDown={
         onClick
           ? (e) => {

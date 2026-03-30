@@ -16,7 +16,9 @@ export function AnalyticsModuleRow({
 }: AnalyticsModuleRowProps) {
   const delta = userGrade != null ? userGrade - moduleAnalytics.average : null;
   const accentColor =
-    module.category === "maths" ? "var(--color-maths)" : "var(--color-computing)";
+    module.category === "maths"
+      ? "var(--color-maths)"
+      : "var(--color-computing)";
 
   return (
     <div
@@ -32,7 +34,7 @@ export function AnalyticsModuleRow({
         Avg {moduleAnalytics.average.toFixed(1)}%
       </span>
       <span className="shrink-0 text-xs font-[family-name:var(--font-dm-mono)] text-text-primary">
-        {userGrade != null ? `${userGrade.toFixed(1)}%` : "–"}
+        {userGrade != null ? `${userGrade.toFixed(1)}%` : "-"}
       </span>
       {delta != null && (
         <span

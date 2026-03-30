@@ -12,6 +12,7 @@ import { ScenarioSimulator } from "@/components/simulator/ScenarioSimulator";
 import { AnalyticsPanel } from "@/components/analytics/AnalyticsPanel";
 import { Footer } from "@/components/layout/Footer";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { DistributionsProvider } from "@/components/distributions/DistributionsProvider";
 
 function PageContent() {
   const [showSimulator, setShowSimulator] = useState(false);
@@ -95,7 +96,9 @@ export default function Home() {
   return (
     <ClientShell>
       <AnalyticsProvider>
-        <PageContent />
+        <DistributionsProvider>
+          <PageContent />
+        </DistributionsProvider>
       </AnalyticsProvider>
     </ClientShell>
   );

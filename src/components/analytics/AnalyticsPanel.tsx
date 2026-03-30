@@ -1,10 +1,14 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useAnalyticsData } from "@/components/analytics/AnalyticsProvider";
+import { useDistributionsData } from "@/components/distributions/DistributionsProvider";
 import { useModuleResults, useYearResult } from "@/hooks/useGradeSelectors";
 import { MODULES } from "@/config/modules";
 import { AnalyticsModuleRow } from "./AnalyticsModuleRow";
+import { SkeletonGroup } from "@/components/shared/SkeletonBar";
 import type { ModuleCode } from "@/lib/types";
 
 function timeAgo(isoDate: string): string {
@@ -49,23 +53,40 @@ function ComparisonBar({
 }
 
 export function AnalyticsPanel() {
+  const { data: session } = useSession();
   const { data: analytics, isLoading } = useAnalyticsData();
+  const { data: distributionsData } = useDistributionsData();
   const moduleResults = useModuleResults();
   const yearResult = useYearResult();
+  const isLoggedIn = session?.user != null;
 
-  if (isLoading) {
+  if (!isLoggedIn) {
     return (
-      <div className="rounded-xl border border-border-primary bg-bg-secondary p-4">
-        <p className="text-sm text-text-muted">Loading analytics...</p>
+      <div className="rounded-xl border border-border-primary bg-bg-secondary p-6 text-center">
+        <p className="text-sm text-text-secondary mb-2">
+          Sign in with your Imperial account to see class analytics and grade
+          distributions.
+        </p>
+        <Link
+          href="/login"
+          className="inline-block rounded-md bg-bg-tertiary px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors"
+        >
+          Sign in
+        </Link>
       </div>
     );
+  }
+
+  if (isLoading) {
+    return <SkeletonGroup />;
   }
 
   if (!analytics?.yearAverage) {
     return (
       <div className="rounded-xl border border-border-primary bg-bg-secondary p-4">
         <p className="text-sm text-text-muted">
-          Not enough data yet. Analytics appear once enough students have entered grades.
+          Not enough data yet. Analytics appear once enough students have
+          entered grades.
         </p>
       </div>
     );
@@ -86,7 +107,9 @@ export function AnalyticsPanel() {
       style={{ boxShadow: "var(--shadow-card)" }}
     >
       <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-text-primary">Year Average</h3>
+        <h3 className="text-sm font-semibold text-text-primary">
+          Year Average
+        </h3>
         <ComparisonBar
           label="Class"
           value={classAvg}
@@ -128,8 +151,27 @@ export function AnalyticsPanel() {
         </div>
       )}
 
+      {distributionsData &&
+        Object.keys(distributionsData.distributions).length > 0 && (
+          <div className="space-y-1 pt-2 border-t border-border-primary">
+            <h3 className="text-sm font-semibold text-text-primary">
+              Distributions
+            </h3>
+            <p className="text-xs text-text-muted">
+              Per-assessment grade distributions are available. Expand any
+              module and click the chart icon next to an assessment to see the
+              distribution.
+            </p>
+            <p className="text-xs font-[family-name:var(--font-dm-mono)] text-text-muted">
+              {Object.keys(distributionsData.distributions).length} assessments
+              with distribution data
+            </p>
+          </div>
+        )}
+
       <p className="text-xs text-text-muted font-[family-name:var(--font-dm-mono)]">
-        {analytics.yearAverage.studentCount} students · {timeAgo(analytics.generatedAt)}
+        {analytics.yearAverage.studentCount} students ·{" "}
+        {timeAgo(analytics.generatedAt)}
       </p>
     </div>
   );

@@ -2,20 +2,14 @@
 
 import { motion, useSpring, useTransform } from "motion/react";
 import { useEffect } from "react";
+import { getClassification } from "@/lib/calculations";
+import { CLASSIFICATION_COLORS } from "@/lib/ui";
 
 type GradeDisplayProps = {
   value: number | null;
   size?: "sm" | "md" | "lg";
   showPercent?: boolean;
   className?: string;
-};
-
-const classificationColor = (value: number): string => {
-  if (value >= 70) return "var(--color-first)";
-  if (value >= 60) return "var(--color-two-one)";
-  if (value >= 50) return "var(--color-two-two)";
-  if (value >= 40) return "var(--color-third)";
-  return "var(--color-fail)";
 };
 
 const sizeClasses = {
@@ -50,7 +44,7 @@ export function GradeDisplay({
   return (
     <span
       className={`font-[family-name:var(--font-dm-mono)] font-medium ${sizeClasses[size]} ${className}`}
-      style={{ color: classificationColor(value) }}
+      style={{ color: CLASSIFICATION_COLORS[getClassification(value)] }}
     >
       <motion.span>{display}</motion.span>
       {showPercent && <span className="text-[0.6em] ml-0.5">%</span>}

@@ -28,11 +28,17 @@ export function TargetSolver({ module, result }: TargetSolverProps) {
     return sum;
   }, 0);
 
-  const target = selectedTarget ?? (customTarget ? parseFloat(customTarget) : null);
+  const target =
+    selectedTarget ?? (customTarget ? parseFloat(customTarget) : null);
 
   const requiredMark =
     target != null
-      ? solveForTarget(target, enteredSum, result.enteredWeight, result.totalWeight)
+      ? solveForTarget(
+          target,
+          enteredSum,
+          result.enteredWeight,
+          result.totalWeight,
+        )
       : undefined;
 
   const remainingAssessments = module.assessments.filter(
@@ -50,6 +56,7 @@ export function TargetSolver({ module, result }: TargetSolverProps) {
         {PRESETS.map((p) => (
           <button
             key={p.label}
+            aria-label={`Target ${p.label} (${p.target}%)`}
             onClick={() => {
               setSelectedTarget(selectedTarget === p.target ? null : p.target);
               setCustomTarget("");
@@ -79,12 +86,13 @@ export function TargetSolver({ module, result }: TargetSolverProps) {
       {target != null && requiredMark !== undefined && (
         <div className="text-xs">
           {requiredMark === null ? (
-            <p className="text-red line-through">
-              Not achievable — maximum possible is {result.maxPossible.toFixed(1)}%
+            <p className="text-red">
+              Not achievable. Would need over 100% on remaining assessments (max
+              possible: {result.maxPossible.toFixed(1)}%)
             </p>
           ) : requiredMark === 0 ? (
             <p className="text-first">
-              Already secured — even with 0% you&apos;ll get ≥{target}%
+              Already secured - even 0% gives you ≥{target}%
             </p>
           ) : (
             <p className="text-text-secondary">

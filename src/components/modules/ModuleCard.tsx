@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "motion/react";
 import type { Module, ModuleResult } from "@/lib/types";
 import { useGradeStore } from "@/store/useGradeStore";
+import { useDistributionsData } from "@/components/distributions/DistributionsProvider";
 import { GradeDisplay } from "@/components/calculator/GradeDisplay";
 import { Badge } from "@/components/shared/Badge";
 import { AssessmentRow } from "./AssessmentRow";
@@ -14,13 +16,49 @@ type ModuleCardProps = {
   result: ModuleResult;
 };
 
+function useModuleNotes(moduleCode: string) {
+  const key = `module-notes-${moduleCode}`;
+  const [notes, setNotes] = useState("");
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(key);
+    if (stored) setNotes(stored); // eslint-disable-line react-hooks/set-state-in-effect -- sync read from localStorage on mount
+  }, [key]);
+
+  const updateNotes = useCallback(
+    (value: string) => {
+      setNotes(value);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        if (value) {
+          localStorage.setItem(key, value);
+        } else {
+          localStorage.removeItem(key);
+        }
+      }, 300);
+    },
+    [key],
+  );
+
+  return [notes, updateNotes] as const;
+}
+
 export function ModuleCard({ module, result }: ModuleCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [notes, setNotes] = useModuleNotes(module.code);
   const grades = useGradeStore((s) => s.grades);
   const setGrade = useGradeStore((s) => s.setGrade);
+  const { data: session } = useSession();
+  const { data: distributionsData } = useDistributionsData();
+  const distributions = distributionsData?.distributions;
+  const isLoggedIn = session?.user != null;
 
   const accentColor =
-    module.category === "maths" ? "var(--color-maths)" : "var(--color-computing)";
+    module.category === "maths"
+      ? "var(--color-maths)"
+      : "var(--color-computing)";
   const glowColor =
     module.category === "maths"
       ? "rgba(129, 140, 248, 0.08)"
@@ -92,6 +130,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
       role="button"
       tabIndex={0}
       aria-expanded={expanded}
+      aria-label={`${module.name}, ${expanded ? "collapse" : "expand"}`}
       className="rounded-lg border border-border-primary bg-bg-secondary overflow-hidden cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-secondary transition-[border-color] duration-200 hover:border-border-secondary"
       style={{
         borderLeftWidth: 3,
@@ -190,7 +229,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
                     <span className="font-[family-name:var(--font-dm-mono)]">
                       {result.minPossible.toFixed(1)}%
                     </span>
-                    {" – "}
+                    {" - "}
                     <span className="font-[family-name:var(--font-dm-mono)]">
                       {result.maxPossible.toFixed(1)}%
                     </span>
@@ -200,13 +239,46 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
 
               <div className="space-y-0.5">
                 {module.assessments.map((a) => (
-                  <AssessmentRow key={a.id} assessment={a} />
+                  <AssessmentRow
+                    key={a.id}
+                    assessment={a}
+                    distribution={distributions?.[a.id]}
+                    userGrade={grades[a.id] ?? null}
+                    showDistribution={isLoggedIn}
+                  />
                 ))}
               </div>
 
               {!module.isPassFail && (
                 <TargetSolver module={module} result={result} />
               )}
+
+              <div className="mt-3 border-t border-border-primary pt-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowNotes(!showNotes);
+                  }}
+                  className="text-[10px] text-text-muted hover:text-text-secondary transition-colors"
+                >
+                  {showNotes
+                    ? "Hide notes"
+                    : notes
+                      ? "Show notes"
+                      : "Add notes"}
+                </button>
+                {showNotes && (
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    placeholder="Personal notes (stored locally)"
+                    className="mt-1.5 w-full resize-none rounded-md border border-border-primary bg-bg-tertiary px-2.5 py-1.5 text-xs text-text-primary outline-none placeholder:text-text-muted focus:border-border-secondary"
+                    rows={3}
+                  />
+                )}
+              </div>
             </div>
           </motion.div>
         )}

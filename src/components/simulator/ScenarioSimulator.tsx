@@ -3,15 +3,14 @@
 import { useState, useMemo, useCallback } from "react";
 import { MODULES } from "@/config/modules";
 import { useGradeStore } from "@/store/useGradeStore";
-import {
-  calculateModuleGrade,
-  calculateYearAverage,
-} from "@/lib/calculations";
+import { calculateModuleGrade, calculateYearAverage } from "@/lib/calculations";
 import type { GradeMap } from "@/lib/types";
 import { GradeDisplay } from "@/components/calculator/GradeDisplay";
 import { Badge } from "@/components/shared/Badge";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { AssessmentSlider } from "./AssessmentSlider";
 import { CLASSIFICATION_COLORS } from "@/lib/ui";
+import { getUnenteredAssessments } from "@/lib/helpers";
 
 type ScenarioSimulatorProps = {
   onClose: () => void;
@@ -23,16 +22,14 @@ export function ScenarioSimulator({ onClose }: ScenarioSimulatorProps) {
 
   const unenteredAssessments = useMemo(
     () =>
-      MODULES.flatMap((m) =>
-        m.assessments
-          .filter((a) => a.weight > 0 && grades[a.id] == null)
-          .map((a) => ({
-            assessment: a,
-            category: m.category,
-          })),
-      ),
+      getUnenteredAssessments(grades).map((a) => ({
+        assessment: a,
+        category: MODULES.find((m) => m.code === a.moduleCode)!.category,
+      })),
     [grades],
   );
+
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [simGrades, setSimGrades] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
@@ -56,10 +53,7 @@ export function ScenarioSimulator({ onClose }: ScenarioSimulatorProps) {
     [combinedGrades],
   );
 
-  const simYear = useMemo(
-    () => calculateYearAverage(simResults),
-    [simResults],
-  );
+  const simYear = useMemo(() => calculateYearAverage(simResults), [simResults]);
 
   const applyPreset = (value: number) => {
     const next: Record<string, number> = {};
@@ -162,12 +156,24 @@ export function ScenarioSimulator({ onClose }: ScenarioSimulatorProps) {
 
       <div className="border-t border-border-primary px-4 py-3">
         <button
-          onClick={handleSave}
+          onClick={() => setShowConfirm(true)}
           className="w-full rounded-md bg-text-primary py-2 text-xs font-medium text-bg-primary transition-colors hover:bg-text-secondary"
         >
           Save as my grades
         </button>
       </div>
+
+      <ConfirmDialog
+        open={showConfirm}
+        title="Overwrite grades?"
+        message="This will overwrite your real grades with simulated values. Continue?"
+        confirmLabel="Overwrite"
+        onConfirm={() => {
+          setShowConfirm(false);
+          handleSave();
+        }}
+        onCancel={() => setShowConfirm(false)}
+      />
     </div>
   );
 }
