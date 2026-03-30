@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
 import { WEIGHTED_MODULES } from "@/config/modules";
 import type { ModuleCode } from "@/lib/types";
-import type {
-  AggregateStats,
-  AnalyticsResponse,
-} from "@/lib/analytics-types";
+import type { AggregateStats, AnalyticsResponse } from "@/lib/analytics-types";
 
 export const revalidate = 300;
 
@@ -73,8 +70,7 @@ export async function GET() {
   const yearAverage =
     yearEcts > 0
       ? {
-          average:
-            Math.round((yearWeightedSum / yearEcts) * 10) / 10,
+          average: Math.round((yearWeightedSum / yearEcts) * 10) / 10,
           studentCount: maxStudentCount,
         }
       : null;

@@ -1,20 +1,45 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { useGradeStore } from "@/store/useGradeStore";
 
 export function useAutoSync() {
+  const { data: session } = useSession();
   const grades = useGradeStore((s) => s.grades);
-  const userId = useGradeStore((s) => s.userId);
-  const recoveryCode = useGradeStore((s) => s.recoveryCode);
   const setSyncStatus = useGradeStore((s) => s.setSyncStatus);
-  const setLastSyncedAt = useGradeStore((s) => s.setLastSyncedAt);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initializedRef = useRef(false);
-  const userCreatedRef = useRef(false);
+
+  const doSync = useCallback(async () => {
+    const email = session?.user?.email;
+    if (!email) return;
+
+    const currentGrades = useGradeStore.getState().grades;
+    setSyncStatus("syncing");
+
+    try {
+      const gradeEntries = Object.entries(currentGrades)
+        .filter(([, mark]) => mark != null)
+        .map(([assessment_id, mark]) => ({ assessment_id, mark }));
+
+      if (gradeEntries.length > 0) {
+        const res = await fetch(`/api/users/${encodeURIComponent(email)}/grades`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ grades: gradeEntries }),
+        });
+        if (!res.ok) throw new Error("Sync failed");
+      }
+
+      setSyncStatus("synced");
+    } catch {
+      setSyncStatus("error");
+    }
+  }, [session?.user?.email, setSyncStatus]);
 
   useEffect(() => {
-    if (!userId || !recoveryCode) return;
+    if (!session?.user?.email) return;
 
     if (!initializedRef.current) {
       initializedRef.current = true;
@@ -23,47 +48,12 @@ export function useAutoSync() {
 
     if (timerRef.current) clearTimeout(timerRef.current);
 
-    timerRef.current = setTimeout(async () => {
-      setSyncStatus("syncing");
-
-      const authHeaders = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${recoveryCode}`,
-      };
-
-      try {
-        if (!userCreatedRef.current) {
-          const userRes = await fetch("/api/users", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: userId, recovery_code: recoveryCode }),
-          });
-          if (!userRes.ok) throw new Error("User creation failed");
-          userCreatedRef.current = true;
-        }
-
-        const gradeEntries = Object.entries(grades)
-          .filter(([, mark]) => mark != null)
-          .map(([assessment_id, mark]) => ({ assessment_id, mark }));
-
-        if (gradeEntries.length > 0) {
-          const res = await fetch(`/api/users/${userId}/grades`, {
-            method: "PUT",
-            headers: authHeaders,
-            body: JSON.stringify({ grades: gradeEntries }),
-          });
-          if (!res.ok) throw new Error("Sync failed");
-        }
-
-        setSyncStatus("synced");
-        setLastSyncedAt(Date.now());
-      } catch {
-        setSyncStatus("error");
-      }
-    }, 500);
+    timerRef.current = setTimeout(doSync, 500);
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [grades, userId, recoveryCode, setSyncStatus, setLastSyncedAt]);
+  }, [grades, session?.user?.email, doSync]);
+
+  return { retrySync: doSync };
 }
