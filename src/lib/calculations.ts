@@ -7,7 +7,12 @@ import type {
   ProgressionStatus,
   ProgressionRequirement,
 } from "./types";
-import { MODULES, TOTAL_WEIGHTED_ECTS, WEIGHTED_MODULES } from "@/config/modules";
+import {
+  TOTAL_WEIGHTED_ECTS,
+  WEIGHTED_MODULES,
+  PROGRAMMING_TEST_ASSESSMENTS,
+  PROGRAMMING_TEST_TOTAL_WEIGHT,
+} from "@/config/modules";
 
 export function getClassification(mark: number): Classification {
   if (mark >= 70) return "First";
@@ -21,10 +26,7 @@ export function calculateModuleGrade(
   module: Module,
   grades: GradeMap,
 ): ModuleResult {
-  const totalWeight = module.assessments.reduce(
-    (sum, a) => sum + a.weight,
-    0,
-  );
+  const totalWeight = module.assessments.reduce((sum, a) => sum + a.weight, 0);
 
   let enteredWeightedSum = 0;
   let enteredWeight = 0;
@@ -42,7 +44,8 @@ export function calculateModuleGrade(
   const currentGrade =
     enteredWeight > 0 ? enteredWeightedSum / enteredWeight : null;
   const minPossible = enteredWeightedSum / totalWeight;
-  const maxPossible = (enteredWeightedSum + remainingWeight * 100) / totalWeight;
+  const maxPossible =
+    (enteredWeightedSum + remainingWeight * 100) / totalWeight;
 
   return {
     code: module.code,
@@ -57,7 +60,6 @@ export function calculateModuleGrade(
 export function calculateYearAverage(
   moduleResults: ModuleResult[],
 ): YearResult {
-  const weightedModules = WEIGHTED_MODULES;
   const resultsMap = new Map(moduleResults.map((r) => [r.code, r]));
 
   let hasAnyGrade = false;
@@ -66,13 +68,14 @@ export function calculateYearAverage(
   let minSum = 0;
   let maxSum = 0;
 
-  for (const mod of weightedModules) {
+  for (const mod of WEIGHTED_MODULES) {
     const result = resultsMap.get(mod.code);
     if (!result) continue;
 
     if (result.currentGrade != null) {
       hasAnyGrade = true;
-      const attemptedEcts = mod.ects * (result.enteredWeight / result.totalWeight);
+      const attemptedEcts =
+        mod.ects * (result.enteredWeight / result.totalWeight);
       weightedSum += result.currentGrade * attemptedEcts;
       enteredEcts += attemptedEcts;
     }
@@ -81,7 +84,8 @@ export function calculateYearAverage(
     maxSum += result.maxPossible * mod.ects;
   }
 
-  const average = hasAnyGrade ? weightedSum / enteredEcts : null;
+  const average =
+    hasAnyGrade && enteredEcts > 0 ? weightedSum / enteredEcts : null;
   const minPossible = minSum / TOTAL_WEIGHTED_ECTS;
   const maxPossible = maxSum / TOTAL_WEIGHTED_ECTS;
 
@@ -102,8 +106,7 @@ export function solveForTarget(
   const remainingWeight = totalWeight - enteredWeight;
   if (remainingWeight <= 0) return null;
 
-  const required =
-    (target * totalWeight - enteredSum) / remainingWeight;
+  const required = (target * totalWeight - enteredSum) / remainingWeight;
 
   if (required > 100) return null;
   if (required <= 0) return 0;
@@ -139,22 +142,13 @@ export function solveForYearTarget(
   if (totalRemainingCapacity <= 0) return null;
 
   const required =
-    (target * TOTAL_WEIGHTED_ECTS - totalEnteredContribution) / totalRemainingCapacity;
+    (target * TOTAL_WEIGHTED_ECTS - totalEnteredContribution) /
+    totalRemainingCapacity;
 
   if (required > 100) return null;
   if (required <= 0) return 0;
   return required;
 }
-
-const PROGRAMMING_TEST_IDS = [
-  "comp40009_haskell_interim",
-  "comp40009_haskell_final",
-  "comp40009_kotlin_interim",
-  "comp40009_kotlin_final",
-  "comp40009_c_main_test",
-] as const;
-
-const PROGRAMMING_TEST_TOTAL_WEIGHT = 82;
 
 function getProgressionStatus(
   minPossible: number,
@@ -177,7 +171,11 @@ export function checkProgression(
   requirements.push({
     id: "year_avg_40",
     label: "Year average ≥ 40%",
-    status: getProgressionStatus(yearResult.minPossible, yearResult.maxPossible, 40),
+    status: getProgressionStatus(
+      yearResult.minPossible,
+      yearResult.maxPossible,
+      40,
+    ),
     detail:
       yearResult.average != null
         ? `Current: ${yearResult.average.toFixed(1)}% (min: ${yearResult.minPossible.toFixed(1)}%, max: ${yearResult.maxPossible.toFixed(1)}%)`
@@ -189,7 +187,8 @@ export function checkProgression(
     id: "math40009_pass",
     label: "MATH40009 Introduction to University Mathematics: pass",
     status: ium === 100 ? "green" : ium === 0 ? "red" : "amber",
-    detail: ium === 100 ? "Passed" : ium === 0 ? "Not yet passed" : "Not entered",
+    detail:
+      ium === 100 ? "Passed" : ium === 0 ? "Not yet passed" : "Not entered",
     moduleCode: "MATH40009",
   });
 
@@ -211,25 +210,19 @@ export function checkProgression(
 
   let progEnteredSum = 0;
   let progEnteredWeight = 0;
-  for (const id of PROGRAMMING_TEST_IDS) {
-    const mark = grades[id];
-    const weight = {
-      comp40009_haskell_interim: 5,
-      comp40009_haskell_final: 25,
-      comp40009_kotlin_interim: 5,
-      comp40009_kotlin_final: 35,
-      comp40009_c_main_test: 12,
-    }[id];
+  for (const a of PROGRAMMING_TEST_ASSESSMENTS) {
+    const mark = grades[a.id];
     if (mark != null) {
-      progEnteredSum += mark * weight;
-      progEnteredWeight += weight;
+      progEnteredSum += mark * a.weight;
+      progEnteredWeight += a.weight;
     }
   }
 
   const progRemainingWeight = PROGRAMMING_TEST_TOTAL_WEIGHT - progEnteredWeight;
   const progMin = progEnteredSum / PROGRAMMING_TEST_TOTAL_WEIGHT;
   const progMax =
-    (progEnteredSum + progRemainingWeight * 100) / PROGRAMMING_TEST_TOTAL_WEIGHT;
+    (progEnteredSum + progRemainingWeight * 100) /
+    PROGRAMMING_TEST_TOTAL_WEIGHT;
   const progCurrent =
     progEnteredWeight > 0 ? progEnteredSum / progEnteredWeight : null;
 
@@ -251,7 +244,8 @@ export function checkProgression(
     id: "comp40009_group_project_40",
     label: "COMP40009 C Group Project ≥ 40%",
     status: getProgressionStatus(groupMin, groupMax, 40),
-    detail: group != null ? `Current: ${group.toFixed(1)}%` : "No grade entered",
+    detail:
+      group != null ? `Current: ${group.toFixed(1)}%` : "No grade entered",
     moduleCode: "COMP40009",
   });
 

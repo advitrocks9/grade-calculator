@@ -8,7 +8,11 @@ import {
   calculateYearAverage,
   checkProgression,
 } from "@/lib/calculations";
-import type { ModuleResult, YearResult, ProgressionRequirement } from "@/lib/types";
+import type {
+  ModuleResult,
+  YearResult,
+  ProgressionRequirement,
+} from "@/lib/types";
 
 export function useModuleResults(): ModuleResult[] {
   const grades = useGradeStore((s) => s.grades);
@@ -20,10 +24,7 @@ export function useModuleResults(): ModuleResult[] {
 
 export function useYearResult(): YearResult {
   const moduleResults = useModuleResults();
-  return useMemo(
-    () => calculateYearAverage(moduleResults),
-    [moduleResults],
-  );
+  return useMemo(() => calculateYearAverage(moduleResults), [moduleResults]);
 }
 
 export function useProgressionRequirements(): ProgressionRequirement[] {
