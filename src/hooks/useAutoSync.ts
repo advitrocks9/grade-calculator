@@ -10,6 +10,7 @@ export function useAutoSync() {
   const setSyncStatus = useGradeStore((s) => s.setSyncStatus);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initializedRef = useRef(false);
+  const suppressRef = useRef(false);
 
   const doSync = useCallback(async () => {
     const email = session?.user?.email;
@@ -23,14 +24,12 @@ export function useAutoSync() {
         .filter(([, mark]) => mark != null)
         .map(([assessment_id, mark]) => ({ assessment_id, mark }));
 
-      if (gradeEntries.length > 0) {
-        const res = await fetch(`/api/users/${encodeURIComponent(email)}/grades`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ grades: gradeEntries }),
-        });
-        if (!res.ok) throw new Error("Sync failed");
-      }
+      const res = await fetch(`/api/users/${encodeURIComponent(email)}/grades`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ grades: gradeEntries }),
+      });
+      if (!res.ok) throw new Error("Sync failed");
 
       setSyncStatus("synced");
     } catch {
@@ -46,6 +45,11 @@ export function useAutoSync() {
       return;
     }
 
+    if (suppressRef.current) {
+      suppressRef.current = false;
+      return;
+    }
+
     if (timerRef.current) clearTimeout(timerRef.current);
 
     timerRef.current = setTimeout(doSync, 500);
@@ -55,5 +59,5 @@ export function useAutoSync() {
     };
   }, [grades, session?.user?.email, doSync]);
 
-  return { retrySync: doSync };
+  return { retrySync: doSync, suppressRef };
 }

@@ -5,17 +5,10 @@ import { useSession, signOut } from "next-auth/react";
 import { Header } from "./Header";
 import { ExportImportButtons } from "@/components/shared/ExportImportButtons";
 import { LoginModal } from "@/components/shared/LoginModal";
-import { ProfileModal } from "@/components/shared/ProfileModal";
 import { useGradeStore } from "@/store/useGradeStore";
 import { useRetrySync } from "./ClientShell";
 
-function UserMenu({
-  onSignIn,
-  onProfile,
-}: {
-  onSignIn: () => void;
-  onProfile: () => void;
-}) {
+function UserMenu({ onSignIn }: { onSignIn: () => void }) {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -65,17 +58,8 @@ function UserMenu({
             <p className="text-xs text-text-muted">{session.user.email}</p>
           </div>
           <button
-            onClick={() => {
-              setOpen(false);
-              onProfile();
-            }}
-            className="mt-1 w-full rounded-lg px-3 py-1.5 text-left text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors cursor-pointer"
-          >
-            Profile
-          </button>
-          <button
             onClick={() => signOut()}
-            className="mt-0.5 w-full rounded-lg px-3 py-1.5 text-left text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors cursor-pointer"
+            className="mt-1 w-full rounded-lg px-3 py-1.5 text-left text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors cursor-pointer"
           >
             Sign out
           </button>
@@ -109,12 +93,11 @@ function SyncErrorBanner() {
 export function HeaderClient() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("login")) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- reading URL params on mount, runs once
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoginOpen(true);
       const authError = params.get("error");
       if (authError) {
@@ -140,10 +123,7 @@ export function HeaderClient() {
       <Header
         exportImportSlot={<ExportImportButtons />}
         authSlot={
-          <UserMenu
-            onSignIn={() => setLoginOpen(true)}
-            onProfile={() => setProfileOpen(true)}
-          />
+          <UserMenu onSignIn={() => setLoginOpen(true)} />
         }
       />
       <SyncErrorBanner />
@@ -154,10 +134,6 @@ export function HeaderClient() {
           setLoginError(null);
         }}
         initialError={loginError}
-      />
-      <ProfileModal
-        open={profileOpen}
-        onClose={() => setProfileOpen(false)}
       />
     </>
   );

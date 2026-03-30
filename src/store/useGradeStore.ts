@@ -12,6 +12,7 @@ interface GradeState {
 
   setGrade: (assessmentId: string, mark: number | null) => void;
   setBatchGrades: (grades: GradeMap) => void;
+  replaceAllGrades: (grades: GradeMap) => void;
   setSyncStatus: (status: SyncStatus) => void;
   clearAll: () => void;
 }
@@ -35,6 +36,8 @@ export const useGradeStore = create<GradeState>()(
           syncStatus: "idle",
         }));
       },
+
+      replaceAllGrades: (grades) => set({ grades, syncStatus: "idle" }),
 
       setSyncStatus: (syncStatus) => set({ syncStatus }),
 

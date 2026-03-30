@@ -55,9 +55,9 @@ export async function PUT(
     grades: { assessment_id: string; mark: number }[];
   };
 
-  if (!Array.isArray(grades) || grades.length === 0 || grades.length > 50) {
+  if (!Array.isArray(grades) || grades.length > 50) {
     return NextResponse.json(
-      { error: "grades must be a non-empty array (max 50)" },
+      { error: "grades must be an array (max 50)" },
       { status: 400 },
     );
   }
@@ -80,22 +80,48 @@ export async function PUT(
 
   const supabase = createServerClient();
 
-  const rows = grades.map((g) => ({
-    user_id: userId,
-    assessment_id: g.assessment_id,
-    mark: g.mark,
-  }));
+  if (grades.length > 0) {
+    const rows = grades.map((g) => ({
+      user_id: userId,
+      assessment_id: g.assessment_id,
+      mark: g.mark,
+    }));
 
-  const { error } = await supabase.from("grades").upsert(rows, {
-    onConflict: "user_id, assessment_id",
-  });
+    const { error } = await supabase.from("grades").upsert(rows, {
+      onConflict: "user_id, assessment_id",
+    });
 
-  if (error) {
-    console.error("Grades upsert failed:", error.message);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    if (error) {
+      console.error("Grades upsert failed:", error.message);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 },
+      );
+    }
+
+    const sentIds = grades.map((g) => g.assessment_id);
+    const { error: deleteError } = await supabase
+      .from("grades")
+      .delete()
+      .eq("user_id", userId)
+      .not("assessment_id", "in", `(${sentIds.join(",")})`);
+
+    if (deleteError) {
+      console.error("Grades cleanup failed:", deleteError.message);
+    }
+  } else {
+    const { error } = await supabase
+      .from("grades")
+      .delete()
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Grades delete failed:", error.message);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 },
+      );
+    }
   }
 
   return NextResponse.json({ success: true });

@@ -42,7 +42,7 @@ export function LoginModal({ open, onClose, initialError }: LoginModalProps) {
 
   useEffect(() => {
     if (open) {
-      setEmail(""); // eslint-disable-line react-hooks/set-state-in-effect -- reset on open
+      setEmail(""); // eslint-disable-line react-hooks/set-state-in-effect
       setLoading(false);
       setError(initialError ?? null);
       setSent(false);
@@ -186,41 +186,55 @@ export function LoginModal({ open, onClose, initialError }: LoginModalProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.15 }}
-                  className="flex flex-col items-center px-6 py-8 text-center"
+                  className="p-6"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-first/10 ring-1 ring-first/20">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-first"
+                  <div className="flex items-center gap-3">
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.05, duration: 0.25, ease: EASE }}
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-maths/10"
                     >
-                      <rect x="2" y="4" width="20" height="16" rx="2" />
-                      <path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                    </svg>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-maths"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </motion.div>
+                    <div>
+                      <h2 className="text-lg font-semibold text-text-primary">
+                        Check your inbox
+                      </h2>
+                      <p className="text-sm text-text-muted">
+                        Link sent to{" "}
+                        <span className="text-text-secondary">{email}</span>
+                      </p>
+                    </div>
                   </div>
-                  <h2 className="mt-5 text-lg font-semibold text-text-primary">
-                    Check your email
-                  </h2>
-                  <p className="mt-1.5 text-sm text-text-muted">
-                    We sent a link to{" "}
-                    <span className="font-medium text-text-secondary">
-                      {email}
-                    </span>
-                  </p>
+
+                  <div className="mt-5 rounded-xl border border-border-primary/40 bg-bg-primary/60 px-3.5 py-3">
+                    <p className="text-xs text-text-muted leading-relaxed">
+                      Click the link in the email to sign in. Check spam if you
+                      don&apos;t see it within a minute.
+                    </p>
+                  </div>
+
                   <button
                     onClick={() => {
                       setSent(false);
                       setError(null);
                     }}
-                    className="cursor-pointer mt-5 text-xs text-text-muted hover:text-text-secondary transition-colors"
+                    className="cursor-pointer mt-4 w-full rounded-xl border border-border-primary/50 bg-bg-tertiary py-2.5 text-xs text-text-secondary hover:text-text-primary hover:border-border-secondary transition-all"
                   >
-                    Didn&apos;t get it? Try again
+                    Send again
                   </button>
                 </motion.div>
               )}

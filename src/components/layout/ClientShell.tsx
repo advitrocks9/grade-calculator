@@ -34,11 +34,11 @@ function RemoteSync({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const [loaded, setLoaded] = useState(false);
 
-  const { retrySync } = useAutoSync();
+  const { retrySync, suppressRef } = useAutoSync();
 
   useEffect(() => {
     if (!session?.user?.email) {
-      setLoaded(true); // eslint-disable-line react-hooks/set-state-in-effect -- gate for unauthenticated users
+      setLoaded(true); // eslint-disable-line react-hooks/set-state-in-effect
       return;
     }
 
@@ -51,16 +51,15 @@ function RemoteSync({ children }: { children: React.ReactNode }) {
           for (const row of data.grades ?? []) {
             remoteGrades[row.assessment_id] = row.mark;
           }
-          if (Object.keys(remoteGrades).length > 0) {
-            useGradeStore.getState().setBatchGrades(remoteGrades);
-          }
+          suppressRef.current = true;
+          useGradeStore.getState().replaceAllGrades(remoteGrades);
         }
       } catch {
-        // remote fetch failed, local grades still available
+        // noop — local grades still usable
       }
       setLoaded(true);
     })();
-  }, [session?.user?.email]);
+  }, [session?.user?.email, suppressRef]);
 
   if (!loaded) {
     return (
