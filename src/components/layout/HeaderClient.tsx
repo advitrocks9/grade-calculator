@@ -69,6 +69,31 @@ function UserMenu({ onSignIn }: { onSignIn: () => void }) {
   );
 }
 
+function SyncDot() {
+  const { data: session } = useSession();
+  const syncStatus = useGradeStore((s) => s.syncStatus);
+
+  if (!session?.user || syncStatus === "idle") return null;
+
+  const color =
+    syncStatus === "error"
+      ? "bg-red"
+      : syncStatus === "syncing"
+        ? "bg-amber"
+        : "bg-first";
+
+  return (
+    <span className="relative flex h-2 w-2">
+      {syncStatus === "syncing" && (
+        <span
+          className={`absolute inset-0 rounded-full ${color} opacity-75 animate-ping`}
+        />
+      )}
+      <span className={`relative inline-flex h-2 w-2 rounded-full ${color}`} />
+    </span>
+  );
+}
+
 function SyncErrorBanner() {
   const syncStatus = useGradeStore((s) => s.syncStatus);
   const retrySync = useRetrySync();
@@ -123,7 +148,10 @@ export function HeaderClient() {
       <Header
         exportImportSlot={<ExportImportButtons />}
         authSlot={
-          <UserMenu onSignIn={() => setLoginOpen(true)} />
+          <div className="flex items-center gap-2">
+            <SyncDot />
+            <UserMenu onSignIn={() => setLoginOpen(true)} />
+          </div>
         }
       />
       <SyncErrorBanner />
