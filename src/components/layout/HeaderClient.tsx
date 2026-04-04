@@ -120,6 +120,12 @@ export function HeaderClient() {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   useEffect(() => {
+    const handler = () => setLoginOpen(true);
+    window.addEventListener("open-login", handler);
+    return () => window.removeEventListener("open-login", handler);
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.has("login")) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -129,7 +135,7 @@ export function HeaderClient() {
         setLoginError(
           authError === "AccessDenied"
             ? "This email isn't on the class list."
-            : "Something went wrong. Please try again.",
+            : "Failed to send sign-in email. Try again later.",
         );
       }
       params.delete("login");

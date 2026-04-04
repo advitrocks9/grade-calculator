@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { useAnalyticsData } from "@/components/analytics/AnalyticsProvider";
 import { useDistributionsData } from "@/components/distributions/DistributionsProvider";
 import { useModuleResults, useYearResult } from "@/hooks/useGradeSelectors";
@@ -69,12 +68,12 @@ export function AnalyticsPanel() {
           Sign in with your Imperial account to see class analytics and grade
           distributions.
         </p>
-        <Link
-          href="/login"
-          className="inline-block rounded-md bg-bg-tertiary px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+        <button
+          onClick={() => window.dispatchEvent(new Event("open-login"))}
+          className="rounded-md bg-bg-tertiary px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
         >
           Sign in
-        </Link>
+        </button>
       </div>
     );
   }
