@@ -16,6 +16,7 @@ export function ModuleGrid() {
         return (
           <motion.div
             key={module.code}
+            className="has-[[aria-expanded=true]]:md:col-span-2 transition-[grid-column] duration-200"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{

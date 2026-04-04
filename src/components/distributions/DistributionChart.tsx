@@ -22,12 +22,8 @@ const BUCKET_LABELS = [
   "90-100",
 ];
 
-function getBucketColor(lower: number): string {
-  if (lower < 40) return "var(--color-fail)";
-  if (lower < 50) return "var(--color-third)";
-  if (lower < 60) return "var(--color-two-two)";
-  if (lower < 70) return "var(--color-two-one)";
-  return "var(--color-first)";
+function getBucketColor(_lower: number): string {
+  return "var(--color-maths)";
 }
 
 function getBucketCount(buckets: DistributionBucket[], lower: number): number {

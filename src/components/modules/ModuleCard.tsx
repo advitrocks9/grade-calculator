@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "motion/react";
 import type { Module, ModuleResult } from "@/lib/types";
 import { useGradeStore } from "@/store/useGradeStore";
-import { useDistributionsData } from "@/components/distributions/DistributionsProvider";
 import { GradeDisplay } from "@/components/calculator/GradeDisplay";
 import { Badge } from "@/components/shared/Badge";
 import { AssessmentRow } from "./AssessmentRow";
@@ -50,10 +48,6 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
   const [notes, setNotes] = useModuleNotes(module.code);
   const grades = useGradeStore((s) => s.grades);
   const setGrade = useGradeStore((s) => s.setGrade);
-  const { data: session } = useSession();
-  const { data: distributionsData } = useDistributionsData();
-  const distributions = distributionsData?.distributions;
-  const isLoggedIn = session?.user != null;
 
   const accentColor =
     module.category === "maths"
@@ -76,7 +70,6 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
     return (
       <motion.div
         id={`module-${module.code}`}
-        layout
         className="rounded-lg border border-border-primary bg-bg-secondary overflow-hidden transition-shadow duration-200 hover:border-border-secondary"
         style={{
           borderLeftWidth: 3,
@@ -126,7 +119,6 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
   return (
     <motion.div
       id={`module-${module.code}`}
-      layout
       role="button"
       tabIndex={0}
       aria-expanded={expanded}
@@ -239,13 +231,7 @@ export function ModuleCard({ module, result }: ModuleCardProps) {
 
               <div className="space-y-0.5">
                 {module.assessments.map((a) => (
-                  <AssessmentRow
-                    key={a.id}
-                    assessment={a}
-                    distribution={distributions?.[a.id]}
-                    userGrade={grades[a.id] ?? null}
-                    showDistribution={isLoggedIn}
-                  />
+                  <AssessmentRow key={a.id} assessment={a} />
                 ))}
               </div>
 

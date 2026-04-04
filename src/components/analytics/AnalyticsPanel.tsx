@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAnalyticsData } from "@/components/analytics/AnalyticsProvider";
 import { useDistributionsData } from "@/components/distributions/DistributionsProvider";
 import { useModuleResults, useYearResult } from "@/hooks/useGradeSelectors";
+import { useGradeStore } from "@/store/useGradeStore";
 import { MODULES } from "@/config/modules";
 import { AnalyticsModuleRow } from "./AnalyticsModuleRow";
 import { SkeletonGroup } from "@/components/shared/SkeletonBar";
@@ -58,6 +59,7 @@ export function AnalyticsPanel() {
   const { data: distributionsData } = useDistributionsData();
   const moduleResults = useModuleResults();
   const yearResult = useYearResult();
+  const grades = useGradeStore((s) => s.grades);
   const isLoggedIn = session?.user != null;
 
   if (!isLoggedIn) {
@@ -96,30 +98,27 @@ export function AnalyticsPanel() {
   const classAvg = analytics.yearAverage.average;
   const userAvg = yearResult.average;
   const delta = userAvg != null ? userAvg - classAvg : null;
+  const distributions = distributionsData?.distributions ?? {};
 
   const modulesWithAnalytics = MODULES.filter(
     (m) => !m.isPassFail && analytics.modules[m.code],
   );
 
   return (
-    <div
-      className="rounded-xl border border-border-primary bg-bg-secondary overflow-hidden p-4 space-y-4"
-      style={{ boxShadow: "var(--shadow-card)" }}
-    >
-      <div className="h-px bg-gradient-to-r from-transparent via-maths/20 to-transparent" />
-      <div className="space-y-2">
-        <h3 className="text-sm font-semibold text-text-primary">
-          Year Average
-        </h3>
+    <div className="space-y-3">
+      <div
+        className="rounded-xl border border-border-primary bg-bg-secondary p-4 space-y-2"
+        style={{ boxShadow: "var(--shadow-card)" }}
+      >
         <ComparisonBar
           label="Class"
           value={classAvg}
-          color="var(--color-text-muted)"
+          color="rgba(129, 140, 248, 0.35)"
         />
         <ComparisonBar
           label="You"
           value={userAvg ?? 0}
-          color="var(--color-first)"
+          color="rgba(129, 140, 248, 0.85)"
         />
         {delta != null && (
           <p className="text-xs font-mono text-right">
@@ -134,46 +133,35 @@ export function AnalyticsPanel() {
             <span className="text-text-muted"> vs class</span>
           </p>
         )}
+        <p className="text-xs text-text-muted font-mono pt-1">
+          {analytics.yearAverage.studentCount} students &middot;{" "}
+          {timeAgo(analytics.generatedAt)}
+        </p>
       </div>
 
       {modulesWithAnalytics.length > 0 && (
-        <div className="space-y-0.5">
+        <div className="space-y-2">
           {modulesWithAnalytics.map((m) => {
             const result = moduleResultMap.get(m.code);
+            const assessmentGrades: Record<string, number | null> = {};
+            for (const a of m.assessments) {
+              assessmentGrades[a.id] = grades[a.id] ?? null;
+            }
+
             return (
               <AnalyticsModuleRow
                 key={m.code}
                 module={m}
                 moduleAnalytics={analytics.modules[m.code as ModuleCode]!}
+                assessmentAnalytics={analytics.assessments}
+                distributions={distributions}
                 userGrade={result?.currentGrade ?? null}
+                assessmentGrades={assessmentGrades}
               />
             );
           })}
         </div>
       )}
-
-      {distributionsData &&
-        Object.keys(distributionsData.distributions).length > 0 && (
-          <div className="space-y-1 pt-2 border-t border-border-primary">
-            <h3 className="text-sm font-semibold text-text-primary">
-              Distributions
-            </h3>
-            <p className="text-xs text-text-muted">
-              Per-assessment grade distributions are available. Expand any
-              module and click the chart icon next to an assessment to see the
-              distribution.
-            </p>
-            <p className="text-xs font-mono text-text-muted">
-              {Object.keys(distributionsData.distributions).length} assessments
-              with distribution data
-            </p>
-          </div>
-        )}
-
-      <p className="text-xs text-text-muted font-mono">
-        {analytics.yearAverage.studentCount} students ·{" "}
-        {timeAgo(analytics.generatedAt)}
-      </p>
     </div>
   );
 }
